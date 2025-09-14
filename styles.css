@@ -14,11 +14,47 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
 }
 
 .player-container {
   position: relative; /* Ensure positioning context */
   z-index: 0; /* baseline */
+}
+
+.yt-input-row {
+  width: 100%;
+  max-width: 640px;
+  margin-bottom: 10px;
+}
+
+.yt-input-row form {
+  display: flex;
+  gap: 8px;
+}
+
+.yt-input-row input[type="url"] {
+  flex: 1;
+  padding: 8px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.yt-input-row button[type="submit"] {
+  padding: 8px 12px;
+  border: 1px solid #bbb;
+  background: #f3f3f3;
+  border-radius: 4px;
+  color: #333;
+  cursor: pointer;
+}
+
+.yt-input-error {
+  color: #c00;
+  font-size: 13px;
+  margin-top: 6px;
+  min-height: 16px;
 }
 
 /* In fullscreen, the bottom-bar should also stretch full width */
@@ -82,6 +118,14 @@ background: #000;
   min-height: auto;
 }
 
+#ytContainer, #ytContainer iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+
 .video-area:fullscreen {
   display: flex;
   align-items: center;
@@ -108,6 +152,7 @@ background: url('assets/loading_frames/1.png') no-repeat center center;
 background-size: 30px 30px; /* exact frame size */
 display: none; /* hidden by default */
 z-index: 100000000000;
+will-change: background-image;
 }
 
 .ended-buttons {
@@ -357,6 +402,7 @@ z-index: 2;
 position: absolute;
 top: 0;
 height: 8px;
+will-change: left, width;
 }
 
 .progress-handle {
@@ -368,6 +414,7 @@ height: 8px;
   background: url('assets/timeline/cursor/timeline_cursor.png') no-repeat center center;
   cursor: pointer;
   z-index: 9999;
+  will-change: left;
 }
 .progress-handle.active {
   background: url('assets/timeline/cursor/timeline_cursor_red.png') no-repeat center center !important;
@@ -448,7 +495,7 @@ top: 0;
 left: 0;
 height: 4px;
 width: 100%;
-background: url('assets/volume/volume_level.png') repeat-x center center;
+background: url('assets/volume/volume_indicator.png') repeat-x center center;
 pointer-events: none;
 }
 
@@ -493,6 +540,7 @@ background: url('assets/fullscreen_button/1.png') no-repeat center center;
 background-size: 25px 18px; /* Match frame size exactly to avoid scaling */
 image-rendering: auto; /* Let browser smooth it out */
 transition:  0.3s ease; /* For fade effect on frame 24 -> 1 */
+will-change: background-image;
 }
 
 .fullscreen-btn:fullscreen {
@@ -512,7 +560,7 @@ transition:  0.3s ease; /* For fade effect on frame 24 -> 1 */
 background-image: url('assets/fullscreen_button/exit_fullscreen.png');
 background-size: 45px 15px;
 width: 45px;
-height: 15;
+height: 15px;
 }
 
 @media (max-width: 400px) {

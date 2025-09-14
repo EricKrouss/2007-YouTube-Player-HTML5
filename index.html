@@ -5,12 +5,53 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>2007-Style YouTube Player</title>
 <link rel="stylesheet" href="styles.css"/>
+<link rel="icon" href="data:,"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/1.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/2.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/3.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/4.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/5.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/6.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/7.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/8.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/9.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/10.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/11.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/12.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/13.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/14.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/15.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/16.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/17.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/18.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/19.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/20.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/21.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/22.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/23.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/24.png"/>
+<link rel="preload" as="image" href="assets/fullscreen_button/exit_fullscreen.png"/>
+<link rel="preload" as="image" href="assets/volume/volume_icon.png"/>
+<link rel="preload" as="image" href="assets/volume/volume_icon_1.png"/>
+<link rel="preload" as="image" href="assets/volume/volume_icon_2.png"/>
+<link rel="preload" as="image" href="assets/volume/volume_icon_3.png"/>
+<link rel="preload" as="image" href="assets/volume/volume_icon_4.png"/>
+<link rel="preload" as="image" href="assets/loading_frames/1.png"/>
 </head>
 <body>
 
+<div class="yt-input-row">
+  <form id="ytLoaderForm" autocomplete="off">
+    <input id="ytUrlInput" type="url" placeholder="Paste YouTube link (youtube.com or youtu.be)" spellcheck="false"/>
+    <button type="submit">Load</button>
+  </form>
+  <div class="yt-input-error" id="ytInputError" aria-live="polite"></div>
+</div>
+
 <div class="player-container">
   <div class="video-area">
-    <video id="myVideo" preload="metadata" src="https://erickrouss.github.io/2007-YouTube-Player-HTML5/video/numanuma.mp4"></video>
+    <video id="myVideo" preload="metadata" src="video/numanuma.mp4"></video>
+    <div id="ytContainer" style="display:none;"></div>
     <div id="loadingIndicator"></div>
     <!-- Add the ended buttons overlay here -->
     <div class="ended-buttons" id="endedButtons">
