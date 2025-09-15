@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2007 YouTube Watch</title>
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { margin:0; font-family: Arial, sans-serif; background:#fff; color:#000; }
+    .page { max-width: 940px; margin: 24px auto; padding: 0 16px; }
+    .header { display:flex; align-items:center; gap:12px; margin-bottom: 16px; }
+    .logo { font-weight:bold; font-size: 26px; color:#c00; }
+    /* 2007-style header */
+    .yt2007-wrap { max-width: 960px; margin: 14px auto 6px; padding: 0 8px; }
+    .yt2007-top { display:flex; align-items:center; justify-content: space-between; margin-bottom: 0; }
+    .yt2007-logo { width:123px; height:63px; image-rendering: auto; }
+    .yt2007-tagline { margin-top: 4px; font-size: 14px; color:#666; }
+    .yt2007-links { font-size: 14px; }
+    .yt2007-links a { color:#03c; text-decoration:none; margin-left: 12px; }
+    .yt2007-links a:hover { text-decoration:underline; }
+    .yt2007-tabs { display:flex; justify-content:flex-start; gap:12px; margin-top: 0; margin-bottom: 0; padding-left: 160px; position: relative; z-index: 2; }
+    .yt2007-tab { display:inline-block; width: 120px; height: 26px; line-height: 26px; text-align:center; border-radius:3px 3px 0 0; background: linear-gradient(#eef4ff,#cfe0f6 55%,#bcd4f2); color:#003c8a; font-weight:bold; font-size:13px; border:1px solid #9bb6df; border-bottom:none; box-shadow: inset 0 1px 0 #ffffffa6; margin-bottom: -2px; }
+    .yt2007-tab.selected { background: linear-gradient(#f9f9f9,#ececec 58%,#dcdcdc); border-color:#bcbcbc; color:#1a2a5a; border-radius:3px 3px 0 0; }
+    .yt2007-searchbar { width: 660px; margin: 2px auto 0; height: 31px; position: relative; background: url('assets/header/grey header bar.png') no-repeat center center; background-size: auto; border: none; z-index: 1; border-radius: 10px; }
+    .yt2007-search-inner { position:absolute; left: 140px; right: 120px; top:50%; transform: translateY(-50%); display:flex; gap:10px; }
+    .yt2007-search-input { flex:1; height: 28px; border:1px solid #7a7a7a; border-radius:4px; padding: 0 10px; font-size:14px; box-shadow: none; }
+    .yt2007-search-input:focus { outline: none; }
+    .yt2007-search-btn { height: 30px; padding: 0 14px; font-size:16px; font-weight: bold; color:#000; background: linear-gradient(#f4f4f4,#e0e0e0); border:1px solid #a3a3a3; border-radius:4px; box-shadow: inset 0 1px 0 #fff; cursor:pointer; }
+    .yt2007-search-btn:focus { outline: none; }
+    .yt2007-upload { display:none; }
+    .yt2007-upload a { color:#03c; text-decoration:none; }
+    .yt2007-upload a:hover { text-decoration:underline; }
+    /* Ensure old input row (from index.html) is hidden on this page */
+    .yt-input-row { display:none !important; }
+
+    /* Watch layout */
+    .watch-layout { max-width: 980px; margin: 10px auto 24px; padding: 0 16px; display: grid; grid-template-columns: 425px 300px; column-gap: 18px; row-gap: 14px; grid-template-areas: "player side" "details side"; align-items: start; }
+    .watch-left { grid-area: player; width: 425px; }
+    .watch-right { grid-area: side; width: 300px; }
+    .player-container { max-width: 425px; }
+    .watch-title { font-size:16px; font-weight:bold; margin: 10px 0 6px; }
+    .video-info { border: 1px solid #d0c28a; background: #fffbe6; padding: 8px 10px; font-size: 12px; line-height: 1.4; }
+    .video-info h1 { font-size: 16px; margin: 0 0 6px; }
+    .video-info .meta-row { margin: 6px 0; }
+    .video-info .label { color: #666; width: 80px; display: inline-block; }
+    .video-info .desc { white-space: pre-wrap; border-top: 1px solid #e6e6e6; margin-top: 8px; padding-top: 8px; }
+    .watch-title-left { font-size: 18px; font-weight: bold; margin: 6px 0; }
+
+    /* Classic 2007-sized player */
+    .watch-classic .player-container { width: 425px; }
+    .watch-classic .video-area { min-width: 425px !important; min-height: 355px !important; }
+    .watch-classic .video-area video { width: 425px !important; height: auto; }
+    .watch-classic #ytContainer, .watch-classic #ytContainer iframe { width: 425px !important; height: 355px !important; }
+    .watch-classic .bottom-bar { width: 425px; }
+
+    /* Right-panel meta card like 2007 */
+    .meta-actions { display:flex; justify-content: space-between; align-items:center; margin: 6px 0; }
+    .meta-actions .try-beta { font-size: 11px; background:#fffbcc; border:1px solid #e2d48f; padding:4px 6px; }
+    .meta-grid-2007 { font-size: 11px; border:1px solid #e6e6e6; padding:6px; background:#fff; }
+    .meta-grid-2007 .row { display:flex; margin:4px 0; }
+    .meta-grid-2007 .row .key { width:60px; color:#666; }
+    .meta-grid-2007 input[type="text"] { width: 220px; font-size:11px; padding:2px; }
+    .meta-grid-2007 textarea { width: 220px; height: 34px; font-size:11px; }
+    .meta-tabs { margin-top:10px; display:flex; gap:6px; font-size:11px; }
+    .meta-tab { background:#eee; border:1px solid #ccc; padding:3px 6px; cursor:default; }
+
+    /* Video details (below player) - 2007 structure */
+    .watch-left .player-container { margin-bottom: 14px; }
+    #actionsAndStatsDiv { width:425px; border:1px solid #c3c3c3; background:#fff; font-size:12px; margin-top:8px; grid-area: details; }
+    /* Actions matrix layout */
+    .actionsMatrix { display:grid; grid-template-columns: 100px 115px 100px 100px; column-gap:2px; align-items:flex-start; padding:2px 4px; font-size:12px; background:#fff; box-sizing: border-box; width:425px; }
+    .ratingBlock { display:flex; flex-direction:column; gap:2px; }
+    .ratingBlock .login { line-height: 14px; }
+    .ratingBlock .starsRow { display:flex; align-items:center; gap:3px; }
+    .ratingBlock .below { font-size:12px; color:#333; margin-left: 0; display:block; padding-top: 0; line-height: 14px; }
+    #ratingMessage a { color:#06c; text-decoration:none; border-bottom:1px dotted #06c; }
+    #ratingMessage a:hover { text-decoration:underline; border-bottom:0; }
+    img.rating { width:15px; height:15px; vertical-align:middle; }
+    .stack { display:flex; flex-direction:column; gap:3px; }
+    .stack a { display:flex; align-items:center; gap:3px; line-height:14px; }
+    .stack a span.eLink { white-space:nowrap; }
+    .stack .eLink { color:#06c; text-decoration:none; border-bottom:1px dotted #06c; }
+    .stack .eLink:hover { text-decoration:underline; border-bottom:0; }
+    .alignMid { vertical-align: middle; }
+    .noul { text-decoration: none; }
+    .statsDiv { border-top:1px solid #d9d9d9; padding:6px 8px; display:flex; justify-content:center; align-items:center; gap:14px; }
+    .statsDiv .statVal { font-weight:bold; }
+    .statsDiv .statDivider { color:#777; }
+    .statsDiv + .statsDiv { border-top:1px solid #d9d9d9; }
+    .smStat { margin-right: 16px; }
+
+    /* Right column visible */
+    .watch-right { display:block; }
+    /* 2007 side info panel */
+    .side-panel-2007 { width:300px; border:1px solid #c3c3c3; background:#fff; font-size:12px; padding:8px; box-sizing:border-box; margin-top: 32px; }
+    .side-panel-2007 .top { display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:6px; }
+    .side-panel-2007 .labels { display:flex; flex-direction:column; gap:4px; }
+    .side-panel-2007 .label { font-weight:bold; color:#333; margin-right:6px; }
+    .side-panel-2007 .value a { color:#06c; text-decoration:none; border-bottom:1px dotted #06c; }
+    .side-panel-2007 .value a:hover { border-bottom:1px solid #06c; }
+    .subscribe-2007 { background: linear-gradient(#ff9e27,#ff7f00 55%,#e36e00); color:#fff; border:1px solid #ce6a00; border-radius:4px; padding:6px 10px; font-weight:bold; cursor:pointer; text-shadow: 0 1px 0 rgba(0,0,0,0.2); }
+    .desc-2007 { margin:6px 0; line-height:1.4; color:#111; }
+    .desc-2007.collapsed { display:-webkit-box; -webkit-line-clamp:2; line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .moreLink { color:#06c; text-decoration:none; border-bottom:1px dotted #06c; }
+    .moreLink:hover { border-bottom:1px solid #06c; }
+    .row-2007 { display:flex; align-items:baseline; gap:6px; margin:6px 0; }
+    .row-2007 .label { width:auto; }
+    .tags-2007 { display:flex; gap:6px; flex-wrap:wrap; max-height:42px; overflow:hidden; }
+    .tags-2007.expanded { max-height:none; }
+    .url-input, .embed-input { width:100%; box-sizing:border-box; padding:4px 6px; font-size:12px; border:1px solid #bfbfbf; background:#fff; }
+    /* Hidden title holder for script compatibility */
+    #vi-title { display:none; }
+    .title { font-size: 22px; font-weight: bold; margin: 8px 0 4px; }
+    .subtitle { color:#555; font-size: 13px; }
+    .meta-grid { display:grid; grid-template-columns: 140px 1fr; gap:6px 14px; margin-top:16px; font-size: 14px; }
+    .meta-label { color:#555; }
+    .desc-box { margin-top:18px; padding:12px; border:1px solid #ddd; background:#fafafa; white-space: pre-wrap; }
+    .tags { display:flex; gap:8px; flex-wrap:wrap; margin-top:6px; }
+    .tag { background:#eee; border:1px solid #ddd; padding:2px 6px; border-radius:3px; font-size:12px; }
+    .spacer { height: 24px; }
+    a { color: #03c; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <!-- 2007 header -->
+  <div class="yt2007-wrap">
+    <div class="yt2007-top">
+      <div>
+        <img class="yt2007-logo" src="assets/header/pic_youtubelogo_123x63.gif" alt="YouTube">
+      </div>
+      <div class="yt2007-links">
+        <a href="#">Sign Up</a> |
+        <a href="#">My Account</a> |
+        <a href="#">History</a> |
+        <a href="#">Help</a> |
+        <a href="#">Log In</a> |
+        <a href="#">Site</a>
+      </div>
+    </div>
+    <div class="yt2007-tabs">
+      <span class="yt2007-tab selected">Videos</span>
+      <span class="yt2007-tab">Categories</span>
+      <span class="yt2007-tab">Channels</span>
+      <span class="yt2007-tab">Community</span>
+    </div>
+    <div class="yt2007-searchbar">
+      <form class="yt2007-search-inner" id="ytLoaderForm" autocomplete="off">
+        <input class="yt2007-search-input" id="ytUrlInput" type="text" placeholder="Paste YouTube link (youtube.com or youtu.be)" spellcheck="false" aria-label="Search or paste URL">
+        <button class="yt2007-search-btn" type="submit">Search</button>
+      </form>
+      <div class="yt-input-error" id="ytInputError" aria-live="polite"></div>
+      <div class="yt2007-upload"></div>
+    </div>
+  </div>
+
+  <!-- Watch layout: player left, info right -->
+  <div class="watch-layout watch-classic">
+    <div class="watch-left">
+      <div class="watch-title-left" id="vi-title-left"></div>
+      <div class="player-container">
+        <div class="video-area">
+      <video id="myVideo" preload="metadata" src="video/numanuma.mp4"></video>
+      <div id="ytContainer" style="display:none;"></div>
+      <div id="loadingIndicator"></div>
+      <div class="ended-buttons" id="endedButtons">
+        <button class="share-btn" id="shareBtn" title="Share"></button>
+        <button class="watch-again-btn" id="watchAgainBtn" title="Watch Again"></button>
+      </div>
+        </div>
+
+        <div class="bottom-bar">
+      <div class="bar-left"></div>
+      <div class="bar-center"></div>
+      <div class="bar-right"></div>
+
+      <div class="controls-bar">
+        <div class="left-controls">
+          <button class="control-button pause-btn" id="playPauseBtn"></button>
+          <button class="control-button rewind-btn" id="rewindBtn"></button>
+        </div>
+
+        <div class="progress-section">
+          <div class="progress-background"></div>
+          <div class="progress-loaded" id="progressLoaded"></div>
+          <div class="progress-red" id="progressRed"></div>
+          <div class="progress-handle" id="progressHandle"></div>
+        </div>
+
+        <div class="right-controls">
+          <div class="time-section">
+            <div class="time-box">
+              <span class="time-current" id="timeCurrent">00:00</span>
+              <span class="time-sep"> / </span>
+              <span class="time-total" id="timeTotal">0:00</span>
+            </div>
+          </div>
+          <div class="divider"></div>
+          <div class="volume-section">
+            <div class="volume-track" id="volumeTrack">
+              <div class="volume-level" id="volumeLevel"></div>
+              <div class="volume-handle" id="volumeHandle"></div>
+            </div>
+            <button class="control-button volume-btn" id="volumeBtn" title="Volume"></button>
+          </div>
+          <div class="divider"></div>
+          <button class="control-button fullscreen-btn" id="fullscreenBtn" title="Fullscreen"></button>
+        </div>
+      </div>
+    </div>
+
+    </div>
+    </div>
+
+    <!-- Video details panel (classic 2007) below the player -->
+    <div id="actionsAndStatsDiv">
+      <div class="actionsMatrix">
+        <div class="ratingBlock">
+          <div class="starsRow">
+            <div>
+              <img class="rating" src="assets/video_details/full_star.png" align="top">
+              <img class="rating" src="assets/video_details/full_star.png" align="top">
+              <img class="rating" src="assets/video_details/full_star.png" align="top">
+              <img class="rating" src="assets/video_details/full_star.png" align="top">
+              <img class="rating" src="assets/video_details/empty_star.png" align="top">
+            </div>
+          </div>
+          <div class="below" id="vd-ratings">41046 ratings</div>
+        </div>
+        <div class="stack">
+          <a href="#" class="noul"><img src="assets/video_details/save_to_favorites.gif" border="0" class="alignMid" alt="Save to Favorites"> <span class="eLink">Save to Favorites</span></a>
+          <a href="#" class="noul"><img src="assets/video_details/add_to_groups.gif" border="0" class="alignMid" alt="Add to Groups"> <span class="eLink">Add to Groups</span></a>
+        </div>
+        <div class="stack">
+          <a href="#" class="noul"><img src="assets/video_details/share_video.gif" border="0" class="alignMid" alt="Share This Video"> <span class="eLink">Share Video</span></a>
+          <a href="#" class="noul"><img src="assets/video_details/post_video.gif" border="0" class="alignMid"> <span class="eLink">Post Video</span></a>
+        </div>
+        <div class="stack">
+          <a href="#" class="noul" style="align-items:flex-start;"><img src="assets/video_details/flag_as_inappropriate.gif" border="0" class="alignMid" alt="Flag as Inappropriate"> <span class="eLink"><span>Flag as</span><br><span>Inappropriate</span></span></a>
+        </div>
+      </div>
+      <div class="statsDiv">
+        Views: <span class="statVal" id="vd-views">7,812,036</span> <div class="statDivider">|</div>
+        Comments: <span class="statVal" id="vd-comments">83293</span> <div class="statDivider">|</div>
+        Favorited: <span class="statVal" id="vd-favs">32041</span> times
+      </div>
+
+    </div>
+    <div class="watch-right">
+      <div class="side-panel-2007">
+        <div class="top">
+          <div class="labels">
+            <div class="row-2007"><span class="label">Added:</span> <span class="value" id="vi-added">July 23, 2007</span></div>
+            <div class="row-2007"><span class="label">From:</span> <span class="value"><a href="#" id="vi-channel">—</a></span></div>
+          </div>
+          <button class="subscribe-2007">Subscribe</button>
+        </div>
+        <div class="desc-2007 collapsed" id="vi-description">Description unavailable. <a href="#" class="moreLink" id="descMore">(more)</a></div>
+        <div class="row-2007"><span class="label">Category</span> <span class="value" id="vi-category"><a href="#">Music</a></span></div>
+        <div class="row-2007">
+          <span class="label">Tags:</span>
+          <span class="value">
+            <span class="tags-2007" id="vi-tags">
+              <a href="#">Chocolate</a>
+              <a href="#">Rain</a>
+              <a href="#">8bit</a>
+              <a href="#">remix</a>
+            </span>
+            <a href="#" class="moreLink" id="tagsMore">(more)</a>
+          </span>
+        </div>
+        <div class="row-2007"><span class="label">URL</span> <input id="vi-url" class="url-input" type="text" readonly value="https://www.youtube.com/watch?v=" /></div>
+        <div class="row-2007"><span class="label">Embed</span> <input id="vi-embed" class="embed-input" type="text" readonly /></div>
+        <div id="vi-title"></div>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Hook our header search to the existing loader logic in script.js
+    (function(){
+      function formatNumber(value){
+        try { const n = Number(value); return isFinite(n) ? n.toLocaleString('en-US') : String(value); } catch { return String(value); }
+      }
+
+      async function fetchYouTubeMeta(id){
+        try {
+          // Try get_video_info via r.jina.ai for structured data
+          let base = {};
+          try {
+            const info = await fetch('https://r.jina.ai/http://www.youtube.com/get_video_info?video_id=' + encodeURIComponent(id) + '&el=detailpage');
+            if (info.ok) {
+              const body = await info.text();
+              const params = new URLSearchParams(body);
+              const prStr = params.get('player_response');
+              if (prStr) {
+                const pr = JSON.parse(prStr);
+                const mf = pr.microformat && pr.microformat.playerMicroformatRenderer ? pr.microformat.playerMicroformatRenderer : {};
+                const vd = pr.videoDetails || {};
+                base = {
+                  title: vd.title || (mf.title && (mf.title.simpleText || mf.title)) || '',
+                  author: vd.author || mf.ownerChannelName || '',
+                  views: vd.viewCount || mf.viewCount || '',
+                  publishDate: mf.publishDate || mf.uploadDate || '',
+                  category: mf.category || '',
+                  tags: mf.tags || vd.keywords || [],
+                  description: (mf.description && (mf.description.simpleText || mf.description)) || vd.shortDescription || ''
+                };
+              }
+            }
+          } catch (_) {}
+
+          // Fallback: scrape watch page via r.jina.ai
+          const resp = await fetch('https://r.jina.ai/http://www.youtube.com/watch?v=' + encodeURIComponent(id));
+          if (resp.ok) {
+            const text = await resp.text();
+            const m = text.match(/ytInitialPlayerResponse\s*=\s*({[\s\S]*?});/);
+            if (m) {
+              try {
+                const pr = JSON.parse(m[1]);
+                const mf = pr.microformat && pr.microformat.playerMicroformatRenderer ? pr.microformat.playerMicroformatRenderer : {};
+                const vd = pr.videoDetails || {};
+                base = Object.assign({ title:'', author:'', views:'', publishDate:'', category:'', tags:[], description:'' }, base, {
+                  title: base.title || vd.title || (mf.title && (mf.title.simpleText || mf.title)) || '',
+                  author: base.author || vd.author || mf.ownerChannelName || '',
+                  views: base.views || vd.viewCount || mf.viewCount || '',
+                  publishDate: base.publishDate || mf.publishDate || mf.uploadDate || '',
+                  category: base.category || mf.category || '',
+                  tags: (base.tags && base.tags.length ? base.tags : (mf.tags || vd.keywords || [])),
+                  description: base.description || (mf.description && (mf.description.simpleText || mf.description)) || vd.shortDescription || ''
+                });
+              } catch (_) {}
+            }
+            if (!base.publishDate) {
+              const pd = text.match(/"publishDate":"(\d{4}-\d{2}-\d{2})"/);
+              const ud = text.match(/"uploadDate":"(\d{4}-\d{2}-\d{2})"/);
+              base.publishDate = (pd && pd[1]) || (ud && ud[1]) || '';
+            }
+            if (!base.category) {
+              const c1 = text.match(/"category":"([^"]+)"/);
+              base.category = (c1 && c1[1]) || base.category || '';
+            }
+            if (!base.tags || (Array.isArray(base.tags) && base.tags.length === 0)) {
+              let tags = [];
+              const arrMatch = text.match(/"keywords":\[(.*?)\]/s);
+              if (arrMatch && arrMatch[1]) {
+                tags = (arrMatch[1].match(/"(.*?)"/g) || []).map(s => s.replace(/^"|"$/g,''));
+              } else {
+                const strMatch = text.match(/"keywords":"([^"]+)"/);
+                if (strMatch && strMatch[1]) tags = strMatch[1].split(',').map(t => t.trim()).filter(Boolean);
+              }
+              base.tags = tags;
+            }
+          }
+          return base;
+        } catch { return null; }
+      }
+
+      function renderPanelsFromMeta(meta){
+        if (!meta) return;
+        const titleLeft = document.getElementById('vi-title-left');
+        if (titleLeft && meta.title) titleLeft.textContent = meta.title;
+        const ch = document.getElementById('vi-channel');
+        if (ch && meta.author) ch.textContent = meta.author;
+        const descEl = document.getElementById('vi-description');
+        if (descEl && meta.description) {
+          descEl.textContent = meta.description;
+          // Re-add (more) link if description is long
+          if (meta.description.length > 120) {
+            descEl.classList.add('collapsed');
+            const more = document.createElement('a');
+            more.href = '#'; more.className = 'moreLink'; more.id = 'descMore'; more.textContent = '(more)';
+            descEl.appendChild(document.createTextNode(' '));
+            descEl.appendChild(more);
+          } else {
+            descEl.classList.remove('collapsed');
+          }
+        }
+        const added = document.getElementById('vi-added');
+        if (added && meta.publishDate) {
+          try {
+            const d = new Date(meta.publishDate);
+            const fmt = d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+            added.textContent = fmt;
+          } catch { added.textContent = meta.publishDate; }
+        }
+        const cat = document.getElementById('vi-category');
+        if (cat) cat.innerHTML = meta.category ? ('<a href="#">' + meta.category + '</a>') : '';
+        const tagsWrap = document.getElementById('vi-tags');
+        const tagsMore = document.getElementById('tagsMore');
+        const tagsArray = Array.isArray(meta.tags) ? meta.tags : (typeof meta.tags === 'string' ? meta.tags.split(',') : []);
+        if (tagsWrap) {
+          tagsWrap.innerHTML = '';
+          const first = tagsArray.slice(0,4);
+          first.forEach(t => {
+            const a = document.createElement('a'); a.href = '#'; a.textContent = t; tagsWrap.appendChild(a);
+          });
+          if (tagsArray.length > 4) {
+            if (tagsMore) tagsMore.style.display = 'inline';
+            tagsWrap.dataset.more = tagsArray.slice(4).join(',');
+          } else {
+            if (tagsMore) tagsMore.style.display = 'none';
+          }
+        }
+        const views = document.getElementById('vd-views');
+        if (views && meta.views) views.textContent = formatNumber(meta.views);
+      }
+
+      async function populatePanelsFromId(id){
+        const meta = await fetchYouTubeMeta(id);
+        renderPanelsFromMeta(meta);
+        // Reset and wire expanders each time
+        const descMore = document.getElementById('descMore');
+        if (descMore) {
+          descMore.onclick = function(ev){ ev.preventDefault(); document.getElementById('vi-description').classList.remove('collapsed'); descMore.remove(); };
+        }
+        const tagsMore = document.getElementById('tagsMore');
+        if (tagsMore) {
+          tagsMore.onclick = function(ev){
+            ev.preventDefault();
+            const wrap = document.getElementById('vi-tags');
+            const extra = (wrap && wrap.dataset.more ? wrap.dataset.more.split(',') : []);
+            extra.forEach(t => { const a=document.createElement('a'); a.href='#'; a.textContent=t; wrap.appendChild(a); });
+            tagsMore.remove();
+          };
+        }
+      }
+
+      const form = document.getElementById('ytLoaderForm');
+      if (!form) return;
+      form.addEventListener('submit', async function(e){
+        e.preventDefault();
+        const input = document.getElementById('ytUrlInput');
+        const errEl = document.getElementById('ytInputError');
+        const link = (input && input.value ? input.value : '').trim();
+        if (typeof extractYouTubeId !== 'function' || typeof extractStartSeconds !== 'function') {
+          if (errEl) errEl.textContent = '';
+          return;
+        }
+        const id = extractYouTubeId(link);
+        const startAt = extractStartSeconds(link) || 0;
+        if (!id) {
+          if (errEl) errEl.textContent = 'Enter a valid YouTube URL (youtube.com or youtu.be).';
+          if (input) input.focus();
+          return;
+        }
+        if (errEl) errEl.textContent = '';
+        if (typeof startLoadingAnimation === 'function') startLoadingAnimation();
+        if (typeof enterYouTubeMode === 'function') await enterYouTubeMode(id, startAt);
+        // Basic metadata
+        try {
+          const resp = await fetch('https://noembed.com/embed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id));
+          if (resp.ok) {
+            const data = await resp.json();
+            document.getElementById('vi-title').textContent = data.title || '';
+            const leftTitle = document.getElementById('vi-title-left');
+            if (leftTitle) leftTitle.textContent = data.title || '';
+            document.getElementById('vi-channel').textContent = data.author_name || '';
+            document.getElementById('vi-url').value = 'https://www.youtube.com/watch?v=' + id;
+            document.getElementById('vi-embed').value = '<object width="425" height="350"><param name="movie" value="https://www.youtube.com/v/' + id + '"></param><param name="wmode" value="transparent"></param><embed src="https://www.youtube.com/v/' + id + '" type="application/x-shockwave-flash" wmode="transparent" width="425" height="350"></embed></object>';
+            // Fill below-player stats placeholders for demo
+            document.getElementById('vd-views').textContent = '—';
+            document.getElementById('vd-comments').textContent = '—';
+            document.getElementById('vd-favs').textContent = '—';
+            document.getElementById('vd-ratings').textContent = '— ratings';
+          }
+        } catch (_) {}
+        try {
+          const o = await fetch('https://www.youtube.com/oembed?url=' + encodeURIComponent('https://www.youtube.com/watch?v=' + id) + '&format=json');
+          if (o.ok) {
+            const d = await o.json();
+            if (!document.getElementById('vi-title').textContent) document.getElementById('vi-title').textContent = d.title || '';
+            const lt = document.getElementById('vi-title-left');
+            if (lt && !lt.textContent) lt.textContent = d.title || '';
+            if (!document.getElementById('vi-channel').textContent) document.getElementById('vi-channel').textContent = d.author_name || '';
+          }
+        } catch (_) {}
+        // Enriched metadata (description, publish date, category, tags, views)
+        await populatePanelsFromId(id);
+      });
+    })();
+  </script>
+</body>
+</html>
+
+
